@@ -1,0 +1,600 @@
+<title>The Outbound Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  :root{
+    --ground:#FCFCFE; --ink:#03080A; --violet:#7624F4; --violet-soft:#F3EDFE;
+    --surface:#F6F4FA; --muted:#6B6478; --line:#E6E2EC; --term:#FAF9FC;
+    --sans:"Schibsted Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#07060B; --ink:#F7F5FB; --violet:#A97BFF; --violet-soft:#1B1330;
+      --surface:#110E1A; --muted:#9A93A8; --line:#241E33; --term:#0D0B14;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#07060B; --ink:#F7F5FB; --violet:#A97BFF; --violet-soft:#1B1330;
+    --surface:#110E1A; --muted:#9A93A8; --line:#241E33; --term:#0D0B14;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding-inline:24px}
+  .col{max-width:640px}
+  h1,h2,h3{text-wrap:balance;margin:0;letter-spacing:-.021em}
+  p{margin:0}
+  a{color:var(--violet)}
+  a:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:3px}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  #field{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .hero .wrap{position:relative;padding-block:92px 72px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--violet);margin-bottom:24px}
+  h1{font-size:clamp(33px,5.4vw,58px);font-weight:700;line-height:1.05}
+  h1 em{font-style:normal;color:var(--violet)}
+  .lede{margin-top:20px;font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:32em}
+  .meta{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:12.5px;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:8px 20px}
+
+  section{padding-block:72px;border-bottom:1px solid var(--line)}
+  .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  h2{font-size:clamp(25px,3.2vw,33px);font-weight:600;line-height:1.16;margin-bottom:24px}
+  .col p+p{margin-top:16px}
+  .col p{color:var(--muted)}
+  .col strong{color:var(--ink);font-weight:600}
+
+  /* thesis */
+  .thesis{border-bottom:1px solid var(--line);padding-block:44px}
+  .thesis .wrap{max-width:720px}
+  .thesis p{font-size:clamp(18px,2.2vw,23px);line-height:1.45;color:var(--ink);
+    border-left:2px solid var(--violet);padding-left:22px}
+  .thesis p b{color:var(--violet);font-weight:600}
+
+  /* video */
+  .video{background:var(--surface);border-bottom:1px solid var(--line);padding-block:52px}
+  .vcue{display:flex;align-items:center;gap:9px;margin-bottom:14px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--violet)}
+  .vcue-arrow{display:inline-block;font-size:15px;animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .vcard{display:flex;align-items:center;gap:22px;padding:26px 28px;text-decoration:none;
+    border:2px solid var(--violet);border-radius:12px;background:var(--ground);
+    box-shadow:0 1px 0 var(--violet-soft), 0 10px 30px -18px var(--violet);
+    transition:transform .18s ease, box-shadow .18s ease}
+  .vcard:hover{transform:translateY(-2px);box-shadow:0 1px 0 var(--violet-soft), 0 16px 34px -16px var(--violet)}
+  .vgo{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;border-radius:999px;background:var(--violet);color:#fff;
+    font-size:15px;font-weight:600;white-space:nowrap}
+  .vgo-a{transition:transform .18s ease;display:inline-block}
+  .vcard:hover .vgo-a{transform:translateX(4px)}
+  .vplay{flex:none;width:54px;height:54px;border-radius:50%;background:var(--violet);
+    display:grid;place-items:center;position:relative}
+  .vplay::after{content:"";border-left:16px solid #fff;
+    border-block:10px solid transparent;margin-left:4px}
+  .vtext{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .vlabel{font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--violet)}
+  .vtitle{font-size:clamp(17px,2.1vw,21px);font-weight:600;color:var(--ink);line-height:1.25}
+  .vmeta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:2px}
+  @media (max-width:620px){
+    .vcard{gap:16px;padding:20px;flex-wrap:wrap}
+    .vplay{width:44px;height:44px}
+    .vplay::after{border-left-width:13px;border-block-width:8px}
+    .vgo{margin-left:0;width:100%;justify-content:center;margin-top:4px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .vcue-arrow{animation:none}
+  }
+
+  /* stack */
+  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .tool{background:var(--ground);padding:21px}
+  .tool .n{font-weight:600;font-size:15px}
+  .tool .p{font-family:var(--mono);font-size:21px;color:var(--violet);margin-top:6px;font-variant-numeric:tabular-nums}
+  .tool .r{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .total{margin-top:20px;display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 14px;
+    padding-top:18px;border-top:2px solid var(--violet)}
+  .total .fig{font-family:var(--mono);font-size:29px;font-weight:500;font-variant-numeric:tabular-nums}
+  .total .cap{color:var(--muted);font-size:15px}
+
+  /* pipeline */
+  .flowbox{overflow-x:auto;margin:30px 0 42px;padding-bottom:4px}
+  .flow{display:flex;align-items:center;gap:9px;min-width:max-content}
+  .node{font-family:var(--mono);font-size:13px;padding:10px 16px;white-space:nowrap;
+    border:1px solid var(--line);border-radius:7px;background:var(--ground)}
+  .node.key{border-color:var(--violet);color:var(--violet)}
+  .arrow{color:var(--muted);font-size:14px}
+
+  .parts{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
+  .part .idx{font-family:var(--mono);font-size:12px;color:var(--violet);display:block;margin-bottom:8px}
+  .part h3{font-size:15.5px;font-weight:600;margin-bottom:6px}
+  .part h3 code{font-family:var(--mono);font-size:13.5px;font-weight:500}
+  .part p{font-size:14.5px;color:var(--muted);line-height:1.55}
+
+  /* terminal */
+  .term-lead{margin-top:46px;max-width:44em;font-size:15.5px;line-height:1.6;color:var(--muted)}
+  .term-lead strong{color:var(--ink);font-weight:600}
+  .term-lead+.term{margin-top:18px}
+  .term{margin-top:46px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--term)}
+  .term-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line)}
+  .term-bar i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+  .term-bar span{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:6px}
+  .term-body{padding:20px 18px;overflow-x:auto}
+  .term pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.75;
+    color:var(--muted);white-space:pre;min-width:max-content}
+  .term .ln{display:block}
+  .term .cmd{color:var(--ink);font-weight:500}
+  .term .ok{color:var(--violet)}
+  .term .zero{opacity:.55}
+  .term .rule{opacity:.35}
+  .term-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;
+    padding:11px 18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .cursor{display:inline-block;width:7px;height:14px;background:var(--violet);
+    vertical-align:-2px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .note{margin-top:42px;background:var(--violet-soft);border-radius:10px;padding:26px 28px}
+  .note h3{font-size:16.5px;font-weight:600;margin-bottom:9px}
+  .note p{color:var(--muted);font-size:15.5px}
+  .note ul{margin:13px 0 0;padding-left:19px;color:var(--muted);font-size:15px}
+  .note li{margin-top:5px}
+
+  /* eval-style results */
+  .panel{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--ground)}
+  .panel-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;
+    padding:14px 20px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .rows{padding:18px 20px 8px}
+  .hrow{display:grid;grid-template-columns:1fr 78px 72px;gap:14px;align-items:center;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);padding-bottom:12px}
+  .row{display:grid;grid-template-columns:1fr 78px 72px;gap:14px;align-items:center;padding:11px 0}
+  .row .who{display:flex;align-items:center;gap:9px;min-width:0}
+  .row .mk{font-family:var(--mono);font-size:12px;color:var(--violet);flex:none}
+  .row .nm{font-family:var(--mono);font-size:13px;color:var(--ink);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+  .row .bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden;
+    grid-column:1/-1;margin-top:9px}
+  .row .bar b{display:block;height:100%;width:0;background:var(--violet);border-radius:4px;
+    transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+  .row.alt .bar b{background:var(--muted);opacity:.45}
+  .row .num{font-family:var(--mono);font-size:13px;text-align:right;
+    color:var(--muted);font-variant-numeric:tabular-nums}
+  .row .num.hi{color:var(--violet);font-weight:500}
+  .row.alt .nm{color:var(--muted)}
+  .panel-foot{padding:13px 20px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .panel-foot b{color:var(--violet);font-weight:500}
+
+  /* landing-page band, install-box pattern */
+  .ship{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;
+    border:1px solid var(--violet);border-radius:10px;padding:18px 20px;background:var(--violet-soft)}
+  .ship .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--violet)}
+  .ship .url{font-family:var(--mono);font-size:14.5px;color:var(--ink);
+    text-decoration:none;border-bottom:1px solid var(--violet);padding-bottom:2px}
+  .ship .url:hover{color:var(--violet)}
+  .ship p{font-size:14.5px;color:var(--muted);flex:1 1 220px}
+
+  /* broke */
+  .breaks{display:grid;gap:24px}
+  .brk{display:grid;grid-template-columns:3px 1fr;gap:18px}
+  .brk::before{content:"";background:var(--violet);border-radius:2px}
+  .brk h3{font-size:16px;font-weight:600;margin-bottom:5px}
+  .brk p{color:var(--muted);font-size:15px;line-height:1.56}
+
+  .qs{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:13px}
+  .qs li{padding-left:25px;position:relative;font-size:16px}
+  .qs li::before{content:"?";position:absolute;left:0;top:0;font-family:var(--mono);
+    color:var(--violet);font-size:15px}
+  .kicker{margin-top:42px;font-size:clamp(18px,2.3vw,22px);line-height:1.42;
+    font-weight:500;max-width:25em}
+  .kicker span{color:var(--violet)}
+
+  /* lesson */
+  .lesson{background:var(--violet-soft)}
+  .lesson .tag{color:var(--violet)}
+  .lesson .kicker{padding-top:26px;border-top:1px solid var(--line)}
+
+  /* closer */
+  .closer{padding-block:64px;text-align:left}
+  .closer .line{font-family:var(--mono);font-size:clamp(15px,2.4vw,20px);color:var(--ink)}
+  .closer .line b{color:var(--violet);font-weight:400}
+  .closer .ask{margin-top:28px;max-width:34em;color:var(--muted);font-size:16.5px;line-height:1.6}
+  .closer .ask+.ask{margin-top:14px;color:var(--ink)}
+  .closer .ask strong{color:var(--ink);font-weight:600}
+  .foot{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px 30px;
+    font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+
+  @media (max-width:640px){
+    .hero .wrap{padding-block:62px 52px}
+    section{padding-block:54px}
+    .hrow,.row{grid-template-columns:1fr 62px 58px;gap:10px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #field{opacity:.5}
+    .cursor{animation:none}
+    .row .bar b{transition:none}
+  }
+</style>
+
+<div class="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow">Bonus material · OpenRouter BDR</div>
+    <h1>Ten hours a week, $217 a month,<br><em>and no engineering background.</em></h1>
+    <p class="lede">The outbound system I built at Garmentory while working full time at Uber. What it produced, and the parts of it that broke.</p>
+    <div class="meta"><span>Charls Daren Pasion</span><span>Account Manager, SMB Eats · Uber</span><span>Seattle</span></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="wrap">
+    <p>A BDR job is mostly one thing: <b>building a repeatable way to find the right people and reach them without wasting anyone's time.</b> I've built that once already, with no budget and no engineering background. This is the whole thing, including the parts that went wrong.</p>
+  </div>
+</div>
+
+<div class="video">
+  <div class="wrap">
+    <p class="vcue"><span class="vcue-arrow" aria-hidden="true">&darr;</span> Start here</p>
+    <a class="vcard" href="https://youtu.be/2nxgcCg4-K0" target="_blank" rel="noopener">
+      <span class="vplay" aria-hidden="true"></span>
+      <span class="vtext">
+        <span class="vlabel">Video intro &middot; 4 min</span>
+        <span class="vtitle">Watch the intro first</span>
+        <span class="vmeta">Me, and why I'm applying</span>
+      </span>
+      <span class="vgo">Watch <span class="vgo-a" aria-hidden="true">&rarr;</span></span>
+    </a>
+  </div>
+</div>
+
+<section>
+  <div class="wrap col">
+    <div class="tag">The setup</div>
+    <h2>Four people, no tooling budget, and nobody who could code.</h2>
+    <p><strong>Garmentory is a marketplace for independent fashion boutiques.</strong> I ran partner acquisition there as a contractor, roughly ten hours a week, alongside my full-time role as an Account Manager at Uber. Business development was four people and effectively no tooling budget.</p>
+    <p>The tools that do this off the shelf cost more per seat than our entire stack cost to run. So the real choice was manual outreach, or building something.</p>
+    <p><strong>I'm not an engineer.</strong> I'd never used Claude Code before this, and it was the first time I'd used AI models for anything beyond writing. Six weeks went into the build. It went live in May and ran from there.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col"><div class="tag">The stack</div><h2>What it cost to run.</h2></div>
+    <div class="tools">
+      <div class="tool"><div class="n">Airtable</div><div class="p">$52.99</div><div class="r">System of record</div></div>
+      <div class="tool"><div class="n">Hunter.io</div><div class="p">$54.10</div><div class="r">Contact enrichment</div></div>
+      <div class="tool"><div class="n">Claude</div><div class="p">$110.40</div><div class="r">How it got built</div></div>
+      <div class="tool"><div class="n">SerpApi</div><div class="p">Free</div><div class="r">Discovery queries</div></div>
+    </div>
+    <div class="total">
+      <span class="fig">$217.49</span>
+      <span class="cap">per month, all in. The rest was Node.js, the Gmail API and time.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <div class="tag">The architecture</div>
+      <h2>Six stages, run in order.</h2>
+      <p>Each stage's job is to stop the next one from wasting money or emailing someone it shouldn't.</p>
+    </div>
+
+    <div class="flowbox"><div class="flow">
+      <div class="node key">Discover</div><span class="arrow">→</span>
+      <div class="node">Qualify</div><span class="arrow">→</span>
+      <div class="node">Enrich</div><span class="arrow">→</span>
+      <div class="node key">Suppress</div><span class="arrow">→</span>
+      <div class="node">Send</div><span class="arrow">→</span>
+      <div class="node">Learn</div>
+    </div></div>
+
+    <div class="parts">
+      <div class="part"><span class="idx">01</span>
+        <h3><code>google-boutique-discovery.js</code></h3>
+        <p>SerpApi prospecting that writes qualified boutiques into the pipeline. A balance check runs before every batch, and dry run is the default. Only <code>--live</code> writes.</p></div>
+      <div class="part"><span class="idx">02</span>
+        <h3><code>stockist-scraper.js</code></h3>
+        <p>Runs across an expanding brand list to surface boutiques already stocking labels that perform on the marketplace. Who a boutique already stocks tells you more than what category it sits in.</p></div>
+      <div class="part"><span class="idx">03</span>
+        <h3>Airtable as system of record</h3>
+        <p>Boutiques, contacts, activities and partners. Status rules keep anything at Live, Onboarding or Partner out of outreach entirely.</p></div>
+      <div class="part"><span class="idx">04</span>
+        <h3><code>draft-outreach.js</code></h3>
+        <p>Multi-touch sequencing with bounce handling, auto-response filtering and calendar guards. Alternate-email sweeps only fire when a known address has failed.</p></div>
+      <div class="part"><span class="idx">05</span>
+        <h3>Live partner guard</h3>
+        <p>Suppression runs against real partner status rather than a stale export, keeping 800+ active partners from ever receiving cold outreach.</p></div>
+      <div class="part"><span class="idx">06</span>
+        <h3><code>orchestrator.js</code></h3>
+        <p>Runs the phases in order so discovery, enrichment and drafting stay in sequence instead of racing each other into the same records.</p></div>
+    </div>
+
+    <p class="term-lead">This is what a run looks like. Three things to notice: the credit balance check that happens <strong>before</strong> it spends anything, two brands returning zero new boutiques because they were already saturated, and nine records excluded because they were already partners.</p>
+
+    <div class="term">
+      <div class="term-bar"><i></i><i></i><i></i><span>garmentory · zsh</span></div>
+      <div class="term-body">
+<pre id="run"><span class="ln"><span class="cmd">$ node google-boutique-discovery.js --brand "St. Agni" --max-credits 25 --live</span></span>
+<span class="ln">[dotenv@17.3.1] injecting env (17) from .env</span>
+<span class="ln">SerpApi balance: <span class="ok">214 searches left</span> (Free Plan, renews 2026-09-30)</span>
+<span class="ln"> </span>
+<span class="ln">  [1/3] St. Agni — 14 candidates, 2 new, 9 pipeline, 3 partners, 25 queries</span>
+<span class="ln">    NEW: Rennes (rennes.us) [/collections signal]</span>
+<span class="ln">    DNRO SKIP: A. Cheng</span>
+<span class="ln"><span class="zero">  [2/3] Hereu — 11 candidates, 0 new, 6 pipeline, 5 partners, 25 queries</span></span>
+<span class="ln"><span class="zero">  [3/3] Dragon Diffusion — 8 candidates, 0 new, 4 pipeline, 2 partners, 25 queries</span></span>
+<span class="ln"> </span>
+<span class="ln"><span class="rule">══════════════════════════════════════════════════</span></span>
+<span class="ln">  GOOGLE BOUTIQUE DISCOVERY SUMMARY  (LIVE)</span>
+<span class="ln"> </span>
+<span class="ln"><span class="cmd">$ node draft-outreach.js --dry-run</span></span>
+<span class="ln">DRY RUN MODE</span>
+<span class="ln">  Found 111 boutique(s) to process.</span>
+<span class="ln">  <span class="ok">Excluded 9 record(s)</span> with status in [Not a Fit, Engaged, Live, Onboarding, Partner]</span>
+<span class="ln">  ┌── WOULD DRAFT: Hiptique -> shop@hiptique.com (Touch 2 Primary) ──</span>
+<span class="ln">  │ Thread: 19e699ddf83aeb61 (active-contact T1 lookup)</span>
+<span class="ln">    HUNTER HIT ali@aliceandwonder.com (personal, conf 99)</span>
+<span class="ln">    Skipped (DNRO list): 1</span>
+<span class="ln">  <span class="ok">Drafted: 102 boutiques</span></span>
+<span class="ln"> </span>
+<span class="ln"><span class="cmd">$ </span><span class="cursor"></span></span></pre>
+      </div>
+      <div class="term-foot">
+        <span>two saturated brands returned zero, which is the system working</span>
+        <span>claude · via Claude Code</span>
+      </div>
+    </div>
+
+    <div class="note col">
+      <h3>What I learned building it</h3>
+      <p>Anything that runs on its own needs brakes, and I had to decide where they went.</p>
+      <ul>
+        <li>A balance check before any discovery run</li>
+        <li>Enrichment gated to one phase, never run across the whole table</li>
+        <li>Dry run as the default, <code>--live</code> as a deliberate act</li>
+        <li>Suppression against live partner status, never a stale export</li>
+        <li>A do-not-contact list that nothing is allowed to override</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col"><div class="tag">What it produced</div>
+      <h2>Two thirds of the platform, from 13% of the storefronts.</h2></div>
+
+    <div class="panel" id="panel">
+      <div class="panel-top">
+        <span>garmentory · live since May 2026</span>
+        <span>boutique channel</span>
+      </div>
+      <div class="rows">
+        <div class="hrow"><span>source</span><span style="text-align:right">stores</span><span style="text-align:right">gmv</span></div>
+
+        <div class="row">
+          <div class="who"><span class="mk">✳</span><span class="nm">boutiques I sourced</span></div>
+          <div class="num">10</div>
+          <div class="num hi"><span class="cnt" data-to="67.5" data-suffix="%">67.5%</span></div>
+          <div class="bar"><b data-w="67.5"></b></div>
+        </div>
+
+        <div class="row alt">
+          <div class="who"><span class="mk" style="color:var(--muted)">◆</span><span class="nm">everything else published</span></div>
+          <div class="num">66</div>
+          <div class="num"><span class="cnt" data-to="32.5" data-suffix="%">32.5%</span></div>
+          <div class="bar"><b data-w="32.5"></b></div>
+        </div>
+      </div>
+      <div class="panel-foot">
+        ✳ <b>10 / 10 activated</b> · every boutique I signed has transacted · <b>2.1×</b> the rest of the team combined
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="tag">Also shipped</div>
+    <h2>The partner landing page.</h2>
+    <p style="margin-bottom:22px">Built to lift first-touch conversion, because sending cold traffic to a generic homepage was costing us replies. Still live.</p>
+    <div class="ship">
+      <span class="lab">Live</span>
+      <a class="url" href="https://charls-ctrl.github.io/garmentory-landing/" target="_blank" rel="noopener">charls-ctrl.github.io/garmentory-landing →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <div class="tag">What broke</div>
+      <h2>The parts that failed, and what I changed.</h2>
+      <p>None of these are hypothetical. I hit every one of them in production, and the last one is the one I should have caught sooner.</p>
+    </div>
+    <div class="breaks col" style="margin-top:30px">
+      <div class="brk"><div>
+        <h3>Enrichment overwrote live contacts</h3>
+        <p>It replaced addresses on threads that were already working, so now it fires at one phase only and never touches a record with activity on it.</p></div></div>
+      <div class="brk"><div>
+        <h3>Bounces failed silently</h3>
+        <p>The parser missed Microsoft non-delivery reports entirely, so dead addresses sat in the pipeline looking perfectly healthy.</p></div></div>
+      <div class="brk"><div>
+        <h3>Auto-responses counted as interest</h3>
+        <p>Out-of-office replies were logged as real responses, which inflated reply rates and pushed dead accounts forward in the sequence.</p></div></div>
+      <div class="brk"><div>
+        <h3>The data lied to me</h3>
+        <p>One account logged replies that never happened. The system told me people were interested in us when nobody had written back.</p></div></div>
+      <div class="brk"><div>
+        <h3>I was pointed at a wall</h3>
+        <p>More than half my pipeline sat on a platform we could not onboard, and none of it ever converted; the machine was working perfectly against accounts that could never close.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="lesson">
+  <div class="wrap col">
+    <div class="tag">What it taught me about your market</div>
+    <h2>Six weeks to build it. Then I had to keep it running.</h2>
+    <p>Every provider I added was another integration to keep current. Every credit balance I checked by hand was spend I had no central view of. And the one model provider I committed to, I committed to because comparing alternatives was harder than staying put. I never evaluated anything.</p>
+    <p>That last one I wouldn't have understood from the outside. <strong>I was the single-provider customer.</strong> When I wanted something cheaper for the high-volume classification work, switching meant rewriting code I barely understood, so I didn't.</p>
+    <p class="kicker">It's why, if I were building a list for OpenRouter, I'd start from companies that already built part of this themselves and are now <span>paying to keep it running</span>. I know what that costs.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="tag">The day job</div>
+    <h2>I run a book of restaurant partners at Uber.</h2>
+    <p><strong>Account Manager, SMB Eats, in Seattle.</strong> Around eighty restaurant partners. The work is ads, promos, platform adoption and contract compliance, with Salesforce as the system of record.</p>
+    <p>The book I run this quarter does about <strong>$8M in annualized GMV</strong>. Starting in October, Uber is trusting me with roughly <strong>$40M</strong> — five times the territory, on the strength of how this quarter went. On the accounts I actively grow, 22% to 30% quarter over quarter, and I closed my six-week ramp at 101% of quota.</p>
+    <p>It is relevant here for one reason. Objection handling is not theory for me. I do it most weeks, with merchants who have every reason to say no and regularly do.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="tag">What transfers</div>
+    <h2>Not the architecture.</h2>
+    <p>OpenRouter's motion is nothing like a boutique marketplace. Arriving with this system and assuming it maps would be the mistake.</p>
+    <p><strong>What transfers is the loop.</strong> Notice friction, build something, watch it break, fix it, then check whether it actually moved anything. That part works on a motion I've never seen before.</p>
+    <p>So before building anything, I'd want to know:</p>
+    <ul class="qs">
+      <li>Where the AE team feels the handoff breaks today</li>
+      <li>Which signals are already tracked internally, so I'm not rebuilding something that exists</li>
+      <li>What a good meeting looks like measured at the opportunity stage, not the booking stage</li>
+    </ul>
+    <p class="kicker">Someone <span>without an engineering background</span> built a system the business depended on, and kept it running. That is the part I would take from this.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <div class="tag">Why change now</div>
+    <h2>I put the build work down on purpose. That is how I knew I wanted it.</h2>
+    <p>I wound down the Garmentory contract at the end of September to clear room for the bigger book at Uber. That was the right call for the job I have, and the work there is going well, which is why the book is growing in the first place.</p>
+    <p>It also meant choosing account management over systems building, deliberately, with both on the table. <strong>Making that choice is what told me which one I actually wanted.</strong> The ten hours a week I was spending on the harder problem is the work I would rather do full time, and this is me looking for the version of it that is a real job.</p>
+  </div>
+</section>
+
+<div class="closer">
+  <div class="wrap col">
+    <p class="line">$ route <b>--to openrouter</b><span class="cursor" style="margin-left:6px"></span></p>
+    <p class="ask">The thing I would most want to know: <strong>what your inbound data already says about which accounts convert.</strong> That is the cheapest ICP truth in the building, and I would want to mine it before generating a single list.</p>
+    <p class="ask">If any of this is worth thirty minutes, I am easy to find.</p>
+    <div class="foot">
+      <span>Charls Daren Pasion</span>
+      <span>Seattle</span>
+      <span>cdp.gervacio@gmail.com</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- hero particle sphere ---- */
+  var c = document.getElementById('field');
+  if (c) {
+    var ctx = c.getContext('2d'), pts = [], N = 330, w = 0, h = 0, rot = 0, raf;
+    for (var i = 0; i < N; i++) {
+      var y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(Math.max(0, 1 - y * y));
+      var th = Math.PI * (3 - Math.sqrt(5)) * i;
+      pts.push({ x: Math.cos(th) * r, y: y, z: Math.sin(th) * r, t: Math.random() * 6.28 });
+    }
+    function size(){
+      var b = c.parentElement.getBoundingClientRect();
+      var d = Math.min(devicePixelRatio || 1, 2);
+      w = b.width; h = b.height; c.width = w * d; c.height = h * d;
+      ctx.setTransform(d, 0, 0, d, 0, 0);
+    }
+    function draw(){
+      ctx.clearRect(0, 0, w, h);
+      var col = getComputedStyle(document.documentElement).getPropertyValue('--violet').trim() || '#7624F4';
+      var cx = w * 0.79, cy = h * 0.44, rad = Math.min(w, h) * (w < 720 ? 0.6 : 0.5);
+      var cs = Math.cos(rot), sn = Math.sin(rot);
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        var x = p.x * cs - p.z * sn, z = p.x * sn + p.z * cs;
+        var d = (z + 1) / 2;
+        var px = cx + x * rad, py = cy + p.y * rad;
+        var tw = 0.6 + 0.4 * Math.sin(p.t + rot * 3);
+        var s = 0.7 + d * 1.9;
+        ctx.globalAlpha = (0.05 + d * 0.46) * tw;
+        ctx.fillStyle = col;
+        ctx.fillRect(px - s, py - 0.55, s * 2, 1.1);
+        ctx.fillRect(px - 0.55, py - s, 1.1, s * 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+    function loop(){ rot += 0.0015; draw(); raf = requestAnimationFrame(loop); }
+    size(); draw();
+    if (!reduce) loop();
+    addEventListener('resize', function(){ size(); draw(); });
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) cancelAnimationFrame(raf);
+      else if (!reduce) { cancelAnimationFrame(raf); loop(); }
+    });
+  }
+
+  /* ---- results panel: bars + count-up, on first view ---- */
+  var panel = document.getElementById('panel');
+  if (panel) {
+    var fire = function(){
+      panel.querySelectorAll('.bar b').forEach(function(b){ b.style.width = b.dataset.w + '%'; });
+      panel.querySelectorAll('.cnt').forEach(function(el){
+        var to = parseFloat(el.dataset.to), sfx = el.dataset.suffix || '', t0 = null;
+        if (reduce) { el.textContent = to.toFixed(1) + sfx; return; }
+        requestAnimationFrame(function step(ts){
+          if (!t0) t0 = ts;
+          var k = Math.min((ts - t0) / 1100, 1);
+          var e = 1 - Math.pow(1 - k, 3);
+          el.textContent = (to * e).toFixed(1) + sfx;
+          if (k < 1) requestAnimationFrame(step);
+        });
+      });
+    };
+    if (!('IntersectionObserver' in window)) { fire(); }
+    else {
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting) { fire(); io.disconnect(); } });
+      }, { threshold: 0.35 });
+      io.observe(panel);
+    }
+  }
+
+  /* ---- terminal: reveal line by line on first view ---- */
+  var run = document.getElementById('run');
+  if (run && !reduce && 'IntersectionObserver' in window) {
+    var lines = Array.prototype.slice.call(run.querySelectorAll('.ln'));
+    lines.forEach(function(l){ l.style.visibility = 'hidden'; });
+    var io2 = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io2.disconnect();
+        lines.forEach(function(l, i){
+          setTimeout(function(){ l.style.visibility = 'visible'; }, i * 85);
+        });
+      });
+    }, { threshold: 0.2 });
+    io2.observe(run);
+  }
+})();
+</script>
